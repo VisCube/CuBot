@@ -8,6 +8,7 @@ def main():
     load_dotenv()
 
     bot = Bot(intents=Intents.all())
+    bot.load_extension("cogs.chat")
     bot.run(os.getenv("DISCORD_TOKEN"))
 
 
