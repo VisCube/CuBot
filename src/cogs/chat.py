@@ -11,7 +11,7 @@ class Chat(Cog):
     async def chatgpt(self, context: ApplicationContext, message: Message):
         await context.defer(ephemeral=True)
 
-        completion = complete(messages=(message,))
+        completion = await complete(messages=(message,))
         content = completion.choices[0].message.content
 
         await context.respond(content=content)
