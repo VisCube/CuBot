@@ -1,6 +1,6 @@
 from discord import ApplicationContext, Bot, Cog, Message, message_command
 
-from src.openai.audio import transcribe
+from src.openai.audio import transcribe, voice
 
 
 class Audio(Cog):
@@ -22,6 +22,16 @@ class Audio(Cog):
         for attachment in attachments:
             transcription = await transcribe(attachment=attachment)
             await context.respond(content=transcription.text, ephemeral=True)
+
+    @message_command(name="TTS")
+    async def tts(self, context: ApplicationContext, message: Message):
+        await context.defer(ephemeral=True)
+
+        if not message.content:
+            return await context.respond("No text found.")
+
+        file = voice(text=message.content)
+        return await context.respond(file=file)
 
 
 def setup(bot: Bot):
