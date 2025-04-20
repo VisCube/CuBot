@@ -11,6 +11,8 @@ from openai.types.chat import (
 )
 from openai.types.chat.chat_completion_content_part_image_param import ImageURL
 
+from src.openai.audio import transcribe
+
 
 async def complete(messages: Iterable[Message]) -> ChatCompletion:
     gpt_messages = [await convert_message(message) for message in messages]
@@ -34,6 +36,9 @@ async def convert_message(message: Message) -> UserMessage:
 
 async def convert_attachment(attachment: Attachment) -> Content:
     match attachment.content_type.split("/")[0]:
+        case "audio" | "video":
+            transcription = await transcribe(attachment=attachment)
+            return TextContent(text=transcription.text, type="text")
         case "image":
             image_url = ImageURL(url=attachment.url, detail="auto")
             return ImageContent(image_url=image_url, type="image_url")
